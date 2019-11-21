@@ -65,7 +65,119 @@
             </div>
         </div>
     </div>
+ <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous">
+    </script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-storage.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAnZwBGgtIeMAkrpOc4fyWzIzQpjrGb7Ps",
+            authDomain: "shortcutsapp-1fcee.firebaseapp.com",
+            databaseURL: "https://shortcutsapp-1fcee.firebaseio.com",
+            projectId: "shortcutsapp-1fcee",
+            storageBucket: "shortcutsapp-1fcee.appspot.com",
+            messagingSenderId: "724754361281",
+            appId: "1:724754361281:web:abe9d70c10f56686e61d40"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+    </script>
+    <script>
+        $(function () {
+            $('#photo').click(function () {
+                $('#file').click();
+            });
+            $('#file').on('change', function () {
+                if (event.target.files.length == 0) {
+                    return;
+                }
+                $('#photo').attr('src', URL.createObjectURL(event.target.files[0]));
+            });
+            $('button').click(function () {
+                input_fields = ['#gender', '#age', '#description',
+                    '#phone', '#lat', '#lng'
+                ];
+                for (const field of input_fields) {
+                    if ($(field).val().trim() == '') {
+                        alert('Fill all fields');
+                        return;
+                    }
+                }
+                if ($('#file')[0].files.length == 0) {
+                    alert('Fill all fields');
+                    return;
+                }
+                var storageRef = firebase.storage().ref();
+                file = $('#file')[0].files[0];
+                // Create a reference to 'mountains.jpg'
+                var photoRef = storageRef.child(uid + '.jpg');
+                photoRef.put(file).then(function (snapshot) {
+                    var usersRef = db.collection("users");
+                    usersRef.doc(uid).set({
+                            user_id: uid,
+                            user_type: 'customer',
+                            gender: $('#gender').val(),
+                            age: $('#age').val(),
+                            description: $('#description').val(),
+                            phone: $('#phone').val(),
+                            latlng: new firebase.firestore.GeoPoint(
+                                parseFloat($('#lat').val()),
+                                parseFloat($('#lng').val()))
+                        }).then(function () {
+                            console.log("Document successfully written!");
+                            location.href = 'main.html';
+                        })
+                        .catch(function (error) {
+                            console.error("Error writing document: ", error);
+                        });
+                }).catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+
+            });
+
+        });
+        var uid;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('signed in');
+                if (user != null) {
+                    name = user.displayName;
+                    email = user.email;
+                    uid = user.uid;
+                    $('#name').val(name);
+                    $('#email').val(email);
+                    db.collection("users").where("user_id", "==", uid)
+                        .get()
+                        .then(function (querySnapshot) {
+                            if (querySnapshot.size > 0) {
+                                location.href = 'main.html';
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log("Error getting documents: ", error);
+                        });
+                }
+            } else {
+                console.log('not signed');
+                location.href = 'login1.html';
+            }
+        });
+    </script>
     
 </body>
 
