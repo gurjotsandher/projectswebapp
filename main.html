@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>barber List</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-12 col-lg-10 pt-5">
+                <div class="card">
+                    <h1 class="text-center pt-4">barber List</h1>
+                    <div class="card-body">
+                        <table class="table table-responsive">
+                            <thead>
+                                <th>Distance from me</th>
+                                <th>barber profile image</th>
+                                <th>barber profile</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous">
+    </script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-storage.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAnZwBGgtIeMAkrpOc4fyWzIzQpjrGb7Ps",
+            authDomain: "shortcutsapp-1fcee.firebaseapp.com",
+            databaseURL: "https://shortcutsapp-1fcee.firebaseio.com",
+            projectId: "shortcutsapp-1fcee",
+            storageBucket: "shortcutsapp-1fcee.appspot.com",
+            messagingSenderId: "724754361281",
+            appId: "1:724754361281:web:abe9d70c10f56686e61d40"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var storage = firebase.storage();
+    </script>
+    <script>
+        var result;
+        var currentUser;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('signed in');
+                if (user != null) {
+                    name = user.displayName;
+                    email = user.email;
+                    uid = user.uid;
+                    $('#name').val(name);
+                    $('#email').val(email);
+                    db.collection("users").where("user_id", "==", uid)
+                        .get()
+                        .then(function (querySnapshot) {
+                            if (querySnapshot.size == 0) {
+                                location.href = 'account_type.html';
+                            }
+                            currentUser = querySnapshot.docs[0].data();
+                            //get all barbers from database
+                            db.collection("users").where("user_type", "==", 'barber')
+                                .get()
+                                .then(function (querySnapshot) {
+                                    result = [];
+                                    count = 0;
+                                    querySnapshot.forEach(function (doc) {
+                                        barber = doc.data();
+                                        distance = calcCrow(currentUser.latlng.latitude,
+                                            currentUser.latlng.longitude, barber.latlng
+                                            .latitude, barber.latlng.longitude);
+                                        result[count++] = {
+                                            distance: distance,
+                                            photoUrl: '',
+                                            profile: barber
+                                        };
+                                        console.log(doc.id, " => ", doc.data());
+                                    });
+                                    getBarberPhotos(0);
+
+                                })
+                                .catch(function (error) {
+                                    console.log("Error getting documents: ", error);
+                                });
+                        })
+                        .catch(function (error) {
+                            console.log("Error getting documents: ", error);
+                        });
+                }
+            } else {
+                console.log('not signed');
+                location.href = 'login1.html';
+            }
+        });
+
+        function getBarberPhotos(index) {
+            if ((index + 1) > result.length) {
+                showBarbers();
+                return;
+            }
+            var photoRef = storage.ref().child(result[index].profile.user_id +
+                '.jpg');
+
+            photoRef.getDownloadURL().then(function (url) {
+                result[index].photoUrl = url;
+                getBarberPhotos(++index);
+            }).catch(function (error) {
+                switch (error.code) {
+                    case 'storage/object-not-found':
+                        // File doesn't exist
+                        break;
+                    case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+                    case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect the server response
+                        break;
+                }
+            });
+        }
+
+        function showBarbers() {
+            html = '';
+            console.log(result);
+            result.sort((a, b) => (a.distance > b.distance) ? 1 : -1)
+            for (let index = 0; index < result.length; index++) {
+                html += '<tr>';
+                html += '<td>';
+                html+=result[index].distance+' km';
+                html += '</td>';
+                html += '<td>';
+                html+='<img class="img img-responsive rounded-circle mx-auto d-block" style="max-width: 128px;" src="'+result[index].photoUrl+'">';
+                html += '</td>';
+                html += '<td>';
+                html+='<p><span class="font-weight-bold">Description: </span>'+result[index].profile.description+'</p>';
+                html+='<p><span class="font-weight-bold">Experience: </span>'+result[index].profile.experience+'</p>';
+                html+='<p><span class="font-weight-bold">Hours: </span>'+result[index].profile.hours+'</p>';
+                html+='<p><span class="font-weight-bold">Phone: </span>'+result[index].profile.phone+'</p>';
+                html+='<p><span class="font-weight-bold">Service: </span>'+result[index].profile.service+'</p>';
+                html += '</td>';
+                html += '<td class="text-center">';
+                html+='<p><a href="https://maps.google.com" class="btn btn-primary">Map</a></p>';
+                html+='<p><a href="'+result[index].profile.instagram+'" class="btn btn-info">Instagram</a></p>';
+                html+='<p><a href="send.html" class="btn btn-warning">Send Message</a></p>';
+                html += '</td>';
+                html += '</tr>';
+            }
+            $('tbody').html(html);
+        }
+
+        function calcCrow(lat1, lng1, lat2, lng2) {
+            var R = 6371; // km
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lng2 - lng1);
+            var lat1 = toRad(lat1);
+            var lat2 = toRad(lat2);
+
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d.toFixed(2);
+        }
+
+        function toRad(Value) {
+            return Value * Math.PI / 180;
+        }
+    </script>
+</body>
+
+</html>
