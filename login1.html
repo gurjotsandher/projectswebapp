@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Welcome to Shorcuts!</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    crossorigin="anonymous">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-firestore.js"></script>
+
+  <!-- The Firebase Authentication UI Library -->
+  <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+  <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+  <!-- This is the configuration that connects my web files to my firebase project -->
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAnZwBGgtIeMAkrpOc4fyWzIzQpjrGb7Ps",
+      authDomain: "shortcutsapp-1fcee.firebaseapp.com",
+      databaseURL: "https://shortcutsapp-1fcee.firebaseio.com",
+      projectId: "shortcutsapp-1fcee",
+      storageBucket: "shortcutsapp-1fcee.appspot.com",
+      messagingSenderId: "724754361281",
+      appId: "1:724754361281:web:abe9d70c10f56686e61d40"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+</head>
+
+<body>
+  <div id="loader" class="loading" style="display: block;">Loading&#8230;</div>
+  <div class="text-white text-center">
+    <h1>ShortCuts</h1>
+  </div>
+  <div class="firebasestuff">
+    <h1 id="firebaseui-auth-container"></h1>
+  </div>
+  <script>
+    // Initialize the FirebaseUI Widget using Firebase.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    var uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+          // User successfully signed in.
+          // Return type determines whether we continue the redirect automatically
+          // or whether we leave that to developer to handle.
+          return true;
+        },
+        uiShown: function () {
+
+          document.getElementById('loader').style.display = 'none';
+        }
+      },
+
+      signInFlow: 'popup',
+      signInSuccessUrl: 'account_type.html',
+      signInOptions: [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
+      tosUrl: 'main.html',
+      // Privacy policy url.
+      privacyPolicyUrl: 'main.html'
+    };
+
+
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
+</body>
+
+</html>

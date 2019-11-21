@@ -1,0 +1,24 @@
+body {
+    background:
+        linear-gradient(rgba(255, 0, 0, 0.2),
+            rgba(255, 0, 0, 0.2)),
+        url(background.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: top center;
+    background-size: cover;
+    font-family: monospace;
+}
+.loading {
+    position: fixed;
+    z-index: 1051;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
