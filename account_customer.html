@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Customer Profile</title>
+    <title>barber Profile</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
         <div class="row justify-content-md-center">
             <div class="col-sm-12 col-md-10 col-lg-6 pt-5">
                 <div class="card">
-                    <h1 class="text-center pt-4">Customer Profile</h1>
+                    <img src="logo.png" class="card-img-top p-2" alt="Site Logo">
                     <div class="card-body">
                         <h6 class="card-title">
                             Welcome to ShortCuts, we want to help customers match with the best Barber for them. Why go
@@ -31,7 +31,7 @@
                             <input type="file" id="file" style="display: none;">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="name" placeholder="Name" readonly>
+                            <input type="text" class="form-control" id="name" placeholder="Name" readonly >
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" id="gender" placeholder="Gender" >
@@ -65,7 +65,10 @@
             </div>
         </div>
     </div>
- <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
     </script>
@@ -128,15 +131,11 @@
                 photoRef.put(file).then(function (snapshot) {
                     var usersRef = db.collection("users");
                     usersRef.doc(uid).set({
-                            user_id: uid,
+                            user_id: uid,  //automatic
                             user_type: 'customer',
                             gender: $('#gender').val(),
                             age: $('#age').val(),
-                            description: $('#description').val(),
-                            phone: $('#phone').val(),
-                            latlng: new firebase.firestore.GeoPoint(
-                                parseFloat($('#lat').val()),
-                                parseFloat($('#lng').val()))
+                            // latlng find on sof solution to add GeoPoint
                         }).then(function () {
                             console.log("Document successfully written!");
                             location.href = 'main.html';
@@ -178,7 +177,6 @@
             }
         });
     </script>
-    
 </body>
 
 </html>
