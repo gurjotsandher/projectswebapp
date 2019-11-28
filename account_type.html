@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Select a profile</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+    <!-- This is the configuration that connects my web files to my firebase project -->
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAnZwBGgtIeMAkrpOc4fyWzIzQpjrGb7Ps",
+            authDomain: "shortcutsapp-1fcee.firebaseapp.com",
+            databaseURL: "https://shortcutsapp-1fcee.firebaseio.com",
+            projectId: "shortcutsapp-1fcee",
+            storageBucket: "shortcutsapp-1fcee.appspot.com",
+            messagingSenderId: "724754361281",
+            appId: "1:724754361281:web:abe9d70c10f56686e61d40"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-sm-12 col-md-10 col-lg-6 pt-5">
+                <img src="logo.png" class="card-img-top p-2" alt="Site Logo">
+            </div>
+            <!-- <div class="col-sm-12 col-md-10 col-lg-6 pt-5">
+                <div class="card">
+                    <img src="logo.png" class="card-img-top p-2" alt="Site Logo">
+                    <div class="card-body">
+                        <h5 class="card-title">Select Account Type</h5>
+
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="row justify-content-md-center">
+            <h1 class="text-white">Select Account Type</h1>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="account_barber.html">
+                    <img src="barber.jpg" class="rounded-circle mx-auto d-block">
+                </a>
+            </div>
+            <div class="col">
+                <a href="account_customer.html">
+                    <img src="customer.jpg" class="rounded-circle mx-auto d-block">
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('signed in');
+                if (user != null) {
+                    name = user.displayName;
+                    email = user.email;
+                    photoUrl = user.photoURL;
+                    emailVerified = user.emailVerified;
+                    uid = user.uid;
+                    db.collection("users").where("user_id", "==", uid)
+                        .get()
+                        .then(function (querySnapshot) {
+                            if (querySnapshot.size > 0) {
+                                location.href = 'main.html';
+                            }
+                            // querySnapshot.forEach(function (doc) {
+                            //     // doc.data() is never undefined for query doc snapshots
+                            //     console.log(doc.id, " => ", doc.data());
+                            // });
+                        })
+                        .catch(function (error) {
+                            console.log("Error getting documents: ", error);
+                        });
+                }
+            } else {
+                console.log('not signed');
+                // No user is signed in.
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

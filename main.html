@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>barber List</title>
+    <title>Barber List</title>
 </head>
 
 <body>
@@ -16,14 +16,14 @@
         <div class="row justify-content-md-center">
             <div class="col-md-12 col-lg-10 pt-5">
                 <div class="card">
-                    <h1 class="text-center pt-4">barber List</h1>
+                    <h1 class="text-center">Barber List</h1>
                     <div class="card-body">
                         <table class="table table-responsive">
                             <thead>
-                                <th>Distance from me</th>
-                                <th>barber profile image</th>
-                                <th>barber profile</th>
-                                <th>Action</th>
+                                <th>Distance</th>
+                                <th>Profile</th>
+                                <th>Barber Profile</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody>
 
@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
     </script>
@@ -79,14 +79,26 @@
                     uid = user.uid;
                     $('#name').val(name);
                     $('#email').val(email);
+
+
+
                     db.collection("users").where("user_id", "==", uid)
                         .get()
                         .then(function (querySnapshot) {
                             if (querySnapshot.size == 0) {
                                 location.href = 'account_type.html';
                             }
+
+
+
+
+<<<<<<< HEAD
+                            currentUser = querySnapshot.docs[0].data(); 
+                            console.log(currentUser);
+                        
+=======
                             currentUser = querySnapshot.docs[0].data();
-                            //get all barbers from database
+>>>>>>> e383e121ad46fa504a2e7fbbc631be409f92524f
                             db.collection("users").where("user_type", "==", 'barber')
                                 .get()
                                 .then(function (querySnapshot) {
