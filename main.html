@@ -92,9 +92,13 @@
 
 
 
+<<<<<<< HEAD
                             currentUser = querySnapshot.docs[0].data(); 
                             console.log(currentUser);
                         
+=======
+                            currentUser = querySnapshot.docs[0].data();
+>>>>>>> e383e121ad46fa504a2e7fbbc631be409f92524f
                             db.collection("users").where("user_type", "==", 'barber')
                                 .get()
                                 .then(function (querySnapshot) {
