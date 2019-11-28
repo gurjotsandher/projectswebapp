@@ -26,8 +26,8 @@
                             <textarea id="message" cols="30" rows="10" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="reset" class="btn btn-danger">Reset</button>
+                            <button type="button" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger">Reset</button>
                         </div>
 
                     </div>
@@ -36,7 +36,50 @@
         </div>
     </div>
 
-    
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous">
+    </script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-storage.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAnZwBGgtIeMAkrpOc4fyWzIzQpjrGb7Ps",
+            authDomain: "shortcutsapp-1fcee.firebaseapp.com",
+            databaseURL: "https://shortcutsapp-1fcee.firebaseio.com",
+            projectId: "shortcutsapp-1fcee",
+            storageBucket: "shortcutsapp-1fcee.appspot.com",
+            messagingSenderId: "724754361281",
+            appId: "1:724754361281:web:abe9d70c10f56686e61d40"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var storage = firebase.storage();
+    </script>
+    <script>
+        var result;
+        var currentUser;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('signed in');
+            } else {
+                console.log('not signed');
+                location.href = 'login1.html';
+            }
+        });
+    </script>
 </body>
 
 </html>

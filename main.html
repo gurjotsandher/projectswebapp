@@ -16,14 +16,14 @@
         <div class="row justify-content-md-center">
             <div class="col-md-12 col-lg-10 pt-5">
                 <div class="card">
-                    <h1 class="text-center pt-4">Barber List</h1>
+                    <h1 class="text-center">Barber List</h1>
                     <div class="card-body">
                         <table class="table table-responsive">
                             <thead>
-                                <th>Distance from me</th>
-                                <th>Barber Profile Image</th>
+                                <th>Distance</th>
+                                <th>Profile</th>
                                 <th>Barber Profile</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody>
 
@@ -79,14 +79,20 @@
                     uid = user.uid;
                     $('#name').val(name);
                     $('#email').val(email);
+
+
+
                     db.collection("users").where("user_id", "==", uid)
                         .get()
                         .then(function (querySnapshot) {
                             if (querySnapshot.size == 0) {
                                 location.href = 'account_type.html';
                             }
+
+
+
+
                             currentUser = querySnapshot.docs[0].data();
-                            //get all barbers from database
                             db.collection("users").where("user_type", "==", 'barber')
                                 .get()
                                 .then(function (querySnapshot) {
