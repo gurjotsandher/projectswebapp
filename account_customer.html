@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>barber Profile</title>
+    <title>Customer Profile</title>
 </head>
 
 <body>
@@ -16,11 +16,11 @@
         <div class="row justify-content-md-center">
             <div class="col-sm-12 col-md-10 col-lg-6 pt-5">
                 <div class="card">
-                    <img src="logo.png" class="card-img-top p-2" alt="Site Logo">
+                    <h1 class="text-center pt-4">Customer Profile</h1>
                     <div class="card-body">
                         <h6 class="card-title">
                             Welcome to ShortCuts, we want to help customers match with the best Barber for them. Why go
-                            into a generic salon and have another random barber cut your hair. Wouldn't you want to see
+                            into a generic salon and have another random baber cut your hair. Wouldn't you want to see
                             their portoilios to see how good they are? Make a profile and lets find the best one for
                             you!
                         </h6>
@@ -31,7 +31,7 @@
                             <input type="file" id="file" style="display: none;">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="name" placeholder="Name" readonly >
+                            <input type="text" class="form-control" id="name" placeholder="Name" readonly>
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" id="gender" placeholder="Gender" >
@@ -66,9 +66,7 @@
         </div>
     </div>
 
-
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
-
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous">
     </script>
@@ -100,82 +98,7 @@
         var db = firebase.firestore();
     </script>
     <script>
-        $(function () {
-            $('#photo').click(function () {
-                $('#file').click();
-            });
-            $('#file').on('change', function () {
-                if (event.target.files.length == 0) {
-                    return;
-                }
-                $('#photo').attr('src', URL.createObjectURL(event.target.files[0]));
-            });
-            $('button').click(function () {
-                input_fields = ['#gender', '#age', '#description',
-                    '#phone', '#lat', '#lng'
-                ];
-                for (const field of input_fields) {
-                    if ($(field).val().trim() == '') {
-                        alert('Fill all fields');
-                        return;
-                    }
-                }
-                if ($('#file')[0].files.length == 0) {
-                    alert('Fill all fields');
-                    return;
-                }
-                var storageRef = firebase.storage().ref();
-                file = $('#file')[0].files[0];
-                // Create a reference to 'mountains.jpg'
-                var photoRef = storageRef.child(uid + '.jpg');
-                photoRef.put(file).then(function (snapshot) {
-                    var usersRef = db.collection("users");
-                    usersRef.doc(uid).set({
-                            user_id: uid,  //automatic
-                            user_type: 'customer',
-                            gender: $('#gender').val(),
-                            age: $('#age').val(),
-                            // latlng find on sof solution to add GeoPoint
-                        }).then(function () {
-                            console.log("Document successfully written!");
-                            location.href = 'main.html';
-                        })
-                        .catch(function (error) {
-                            console.error("Error writing document: ", error);
-                        });
-                }).catch(function (error) {
-                    console.error("Error writing document: ", error);
-                });
-
-            });
-
-        });
-        var uid;
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                console.log('signed in');
-                if (user != null) {
-                    name = user.displayName;
-                    email = user.email;
-                    uid = user.uid;
-                    $('#name').val(name);
-                    $('#email').val(email);
-                    db.collection("users").where("user_id", "==", uid)
-                        .get()
-                        .then(function (querySnapshot) {
-                            if (querySnapshot.size > 0) {
-                                location.href = 'main.html';
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log("Error getting documents: ", error);
-                        });
-                }
-            } else {
-                console.log('not signed');
-                location.href = 'login1.html';
-            }
-        });
+        
     </script>
 </body>
 
