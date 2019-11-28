@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <h6 class="card-title">
                             Welcome to ShortCuts, we want to help customers match with the best Barber for them. Why go
-                            into a generic salon and have another random baber cut your hair. Wouldn't you want to see
+                            into a generic salon and have another random barber cut your hair. Wouldn't you want to see
                             their portoilios to see how good they are? Make a profile and lets find the best one for
                             you!
                         </h6>
@@ -98,7 +98,86 @@
         var db = firebase.firestore();
     </script>
     <script>
-        
+        $(function () {
+            $('#photo').click(function () {
+                $('#file').click();
+            });
+            $('#file').on('change', function () {
+                if (event.target.files.length == 0) {
+                    return;
+                }
+                $('#photo').attr('src', URL.createObjectURL(event.target.files[0]));
+            });
+            $('button').click(function () {
+                input_fields = ['#gender', '#age', '#description',
+                    '#phone', '#lat', '#lng'
+                ];
+                for (const field of input_fields) {
+                    if ($(field).val().trim() == '') {
+                        alert('Fill all fields');
+                        return;
+                    }
+                }
+                if ($('#file')[0].files.length == 0) {
+                    alert('Fill all fields');
+                    return;
+                }
+                var storageRef = firebase.storage().ref();
+                file = $('#file')[0].files[0];
+                // Create a reference to 'mountains.jpg'
+                var photoRef = storageRef.child(uid + '.jpg');
+                photoRef.put(file).then(function (snapshot) {
+                    var usersRef = db.collection("users");
+                    usersRef.doc(uid).set({
+                            user_id: uid,
+                            user_type: 'customer',
+                            gender: $('#gender').val(),
+                            age: $('#age').val(),
+                            description: $('#description').val(),
+                            phone: $('#phone').val(),
+                            latlng: new firebase.firestore.GeoPoint(
+                                parseFloat($('#lat').val()),
+                                parseFloat($('#lng').val()))
+                        }).then(function () {
+                            console.log("Document successfully written!");
+                            location.href = 'main.html';
+                        })
+                        .catch(function (error) {
+                            console.error("Error writing document: ", error);
+                        });
+                }).catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+
+            });
+
+        });
+        var uid;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('signed in');
+                if (user != null) {
+                    name = user.displayName;
+                    email = user.email;
+                    uid = user.uid;
+                    $('#name').val(name);
+                    $('#email').val(email);
+                    db.collection("users").where("user_id", "==", uid)
+                        .get()
+                        .then(function (querySnapshot) {
+                            if (querySnapshot.size > 0) {
+                                location.href = 'main.html';
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log("Error getting documents: ", error);
+                        });
+                }
+            } else {
+                console.log('not signed');
+                location.href = 'login1.html';
+            }
+        });
     </script>
 </body>
 
